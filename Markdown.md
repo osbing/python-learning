@@ -5,7 +5,7 @@
 **加粗**
 
 用Markdown制作一些单词**粗体**和其他单词* italic *非常容易。您甚至可以[链接到Google！]（http://google.com）
-~~this~~其他单词~~this~~
+~~其他单词~~
 
 > <i class="icon-file"></i> **行为**
 
