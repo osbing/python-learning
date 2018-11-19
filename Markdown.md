@@ -18,8 +18,10 @@ demo[^demo]
 
 [在线公式编辑器](https://www.codecogs.com/latex/eqneditor.php)
 ### 书写一个质能守恒公式[^LaTeX]
-$ E=mc^2 $
+$ e=m c^2 $
+
 $$	x = \dfrac{-b \pm \sqrt{b^2 - 4ac}}{2a} $$
+
 $$ \sum_{i=0}^n i^2 = \frac{(n^2+n)(2n+1)}{6} $$
 
 ### 高亮一段代码[^code]
