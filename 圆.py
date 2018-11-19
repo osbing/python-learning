@@ -1,5 +1,6 @@
 import turtle
-turtle.speed(10)
+
+turtle.speed(0)
 t = turtle.Pen()
 t.color("green")
 t.pensize(3)
