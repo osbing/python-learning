@@ -2,8 +2,9 @@
 import turtle
 import time
  
+turtle.speed(0)
 turtle.pensize(5)
-turtle.pencolor("green") #yellow
+turtle.pencolor("yellow") #green
 turtle.fillcolor("red")
  
 turtle.begin_fill()
