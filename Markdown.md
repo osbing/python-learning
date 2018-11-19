@@ -11,6 +11,8 @@
 ### 书写一个质能守恒公式[^LaTeX]
 $$E=mc^2$$
 
+$$\sum_{i=0}^n i^2 = \frac{(n^2+n)(2n+1)}{6}$$
+
 ### 高亮一段代码[^code]
 ```python
 @requires_authorization
@@ -46,13 +48,15 @@ if __name__ == '__main__':
 | 手机        |   \$12   |   12   |
 | 管线        |    \$1    |  234  |
 
-作者 [@ghosert][3]     
+-------
+作者 [@ghost][3]     
 2018 年 07月 07日    
 
 [^LaTeX]: 支持 **LaTeX** 编辑显示支持，例如：$\sum_{i=1}^n a_i=0$， 访问 [MathJax][4] 参考更多使用方法。
 
 [^code]: 代码高亮功能支持包括 Java, Python, JavaScript 在内的，**四十一**种主流编程语言。
 
+<i class="icon-share"></i>
 
 [1]: https://www.zybuluo.com/mdeditor?url=https://www.zybuluo.com/static/editor/md-help.markdown
 [2]: https://www.zybuluo.com/mdeditor?url=https://www.zybuluo.com/static/editor/md-help.markdown#cmd-markdown-高阶语法手册
