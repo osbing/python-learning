@@ -1,3 +1,7 @@
+"""
+酷狗TOP500_排行榜_乐库频道_酷狗网
+"""
+
 from bs4 import BeautifulSoup
 import requests
 import time
@@ -7,6 +11,7 @@ headers = {
 }
 
 def get_info(url):
+    """获取页面信息"""
     wb_data = requests.get(url,headers=headers)
     soup = BeautifulSoup(wb_data.text,'lxml')
     ranks = soup.select('#rankWrap > div.pc_temp_songlist > ul > li > span.pc_temp_num')
