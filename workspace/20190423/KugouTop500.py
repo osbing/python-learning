@@ -5,6 +5,7 @@
 from bs4 import BeautifulSoup
 import requests
 import time
+import csv
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.108 Safari/537.36'
@@ -30,19 +31,19 @@ def get_info(url):
             'time':time.get_text().strip(),
             'link':link.get('href') # 获取 Tag <a /a> 的属性
         }
-        # print(data)
+        print(data)
         info_lists.append(data) # 循环数据并append到list中
 
 if __name__ == '__main__':
     # 酷狗TOP500_排行榜_乐库频道_酷狗网
-    print(time.ctime())
-    t1 = time.process_time()
+    # print(time.ctime())
+    # t1 = time.process_time()
     urls = ['https://www.kugou.com/yy/rank/home/{}-8888.html'.format(str(i))
             for i in range(1,24) # 2~24
     ]
     for url in urls:
         get_info(url) # 循环调用爬虫信息函数
-        time.sleep(1)
+        # time.sleep(1)
     for info_list in info_lists:
         # 写入TXT
         with open('C:/GitHub/python-learning/workspace/20190423/KugouTOP500.txt','a+',encoding='utf-8') as f:
@@ -56,7 +57,27 @@ if __name__ == '__main__':
             except UnicodeEncodeError:
                 pass # pass编码错误
         # print(info_list)
-    print(time.ctime())
-    t2 = time.process_time()
-    t = t2 - t1
-    print('Cost: ' + str(t) + ' s')
+
+    # 创建表格和表头
+    with open('C:/GitHub/python-learning/workspace/20190423/KugouTOP500.csv','wt',newline='') as fp:
+        writer = csv.writer(fp)
+        writer.writerow(('Rank','Singer','Song','time','link')) # 写入 header
+
+    for info_list in info_lists:
+        # newline='' 避免空行
+        with open('C:/GitHub/python-learning/workspace/20190423/KugouTOP500.csv','a+',newline='') as fp:
+            try:
+                writer = csv.writer(fp)
+                rank = info_list['rank']
+                singer = info_list['singer']
+                song = info_list['song']
+                time = info_list['time']
+                link = info_list['link']
+                writer.writerow((rank,singer,song,time,link))
+            except UnicodeEncodeError:
+                pass
+
+    # print(time.ctime())
+    # t2 = time.process_time()
+    # t = t2 - t1
+    # print('Cost: ' + str(t) + ' s')
