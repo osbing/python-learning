@@ -13,6 +13,7 @@ headers = {
 
 info_lists = []
 
+
 def get_info(url):
     wb_data = requests.get(url,headers=headers)
     soup = BeautifulSoup(wb_data.text,'lxml')
@@ -30,9 +31,12 @@ def get_info(url):
         print(data)
 
 if __name__ == '__main__':
-    urls = ['https://gz.zu.anjuke.com/fangyuan/tianhe/p{}/'.format(i) for i in range(1,2)] # 天河区
+    urls = ['https://gz.zu.anjuke.com/fangyuan/tianhe/p{}/'.format(i) for i in range(1,50)] # 天河区
     for url in urls:
         get_info(url)
+    # info_lists = sorted(info_lists, key=lambda x : x['price'], reverse=True)  # 对列表中的字典根据 priced 的值按降序排序
+    info_lists = sorted(info_lists, key=lambda x : x['address'], reverse=False)  # 对列表中的字典根据 address 的值按降序排序
+    # print(info_lists)
     for info_list in info_lists:
         with open('C:/GitHub/python-learning/workspace/20190423/anjuke.txt','a+',encoding='utf-8') as f:
             try:
@@ -44,13 +48,13 @@ if __name__ == '__main__':
                 pass
 
     # 创建表格和表头
-    with open('C:/GitHub/python-learning/workspace/20190423/anjuke.csv','wt',newline='',encoding='utf-8') as fp:
+    with open('C:/GitHub/python-learning/workspace/20190423/anjuke.csv','wt',newline='') as fp: #,encoding='utf-8'
         writer = csv.writer(fp)
         writer.writerow(('Price','Address','Title')) # 写入 header
 
     for info_list in info_lists:
         # newline='' 避免空行
-        with open('C:/GitHub/python-learning/workspace/20190423/anjuke.csv','a+',newline='',encoding='utf-8') as fp:
+        with open('C:/GitHub/python-learning/workspace/20190423/anjuke.csv','a+',newline='') as fp:
             writer = csv.writer(fp)
             price = info_list['price']
             address = info_list['address']
