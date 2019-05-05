@@ -58,7 +58,7 @@ def get_info(url):
         pass
 
 if __name__ == '__main__':
-    urls = ['https://www.qiushibaike.com/text/page/{}/'.format(str(i)) for i in range(1,50)]
+    urls = ['https://www.qiushibaike.com/text/page/{}/'.format(str(i)) for i in range(1,36)]
     for url in urls:
         get_info(url)
         yet_lists.append(url)
