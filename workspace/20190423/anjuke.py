@@ -31,7 +31,7 @@ def get_info(url):
         print(data)
 
 if __name__ == '__main__':
-    urls = ['https://gz.zu.anjuke.com/fangyuan/tianhe/p{}/'.format(i) for i in range(1,10)] # 天河区
+    urls = ['https://gz.zu.anjuke.com/fangyuan/tianhe/p{}/'.format(str(i)) for i in range(1,10)] # 天河区
     for url in urls:
         get_info(url)
     # info_lists = sorted(info_lists, key=lambda x : x['price'], reverse=True)  # 对列表中的字典根据 priced 的值按降序排序
