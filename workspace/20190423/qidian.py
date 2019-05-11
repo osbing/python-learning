@@ -1,12 +1,18 @@
 #-*- coding:utf-8 -*-
 
 # pip3 install xlwt
-
+# pip install fonttools
 # https://www.qidian.com/
+# 字数反爬 https://blog.csdn.net/qq_35741999/article/details/82018049 
 import xlwt
 import requests
 from lxml import etree
 import time
+import re
+from fontTools.ttLib import TTFont
+from io import BytesIO
+from pyquery import PyQuery as pq
+
 # book = xlwt.Workbook(encoding='utf-8')
 # sheet = book.add_sheet('Sheet1')
 # sheet.write(0,0,'python')
@@ -20,28 +26,62 @@ headers = {
 }
 all_info_list = []
 
+def get_font(url):
+    """ 字数反爬 解析字体 """
+    response = requests.get(url)
+    font = TTFont(BytesIO(response.content))
+    cmap = font.getBestCmap()
+    font.close()
+    return cmap
+
+def get_encode(cmap,values):
+    """ 字数反爬 解析数值 """
+    WORD_MAP = {'zero':'0','one':'1','two':'2','three':'3','four':'4','five':'5','six':'6','seven':'7','eight':'8','nine':'9','period':'.'}
+    word_count = ''
+    for value in values.split(';'):
+        value = value[2:]
+        key = cmap[int(value)]
+        word_count += WORD_MAP[key]
+    return word_count
+
 def get_info(url):
+    """ 爬虫 """
+    #  """ 获取字体文件链接 """
+    response = requests.get(url).text   #获取当前页面的html
+    doc = pq(response)
+    classattr = doc('p.update > span > span').attr('class') #获取当前字体文件名称
+    pattern = '</style><span.*?%s.*?>(.*?)</span>'%classattr
+    numberlist = re.findall(pattern,response) #获取当前页面所有被字数字符
+    fonturl = doc('p.update > span > style').text() #获取当前包含字体文件链接的文本
+    url_font = re.search('woff.*?url.*?\'(.+?)\'.*?truetype',fonturl).group(1) #通过正则获取当前页面字体文件链接
+    cmap = get_font(url_font) #字数反爬 解析字体
+    i = 0
+
+    # 开始爬虫
     html = requests.get(url,headers=headers)
     selector = etree.HTML(html.text)
-    infos = selector.xpath('//ul[@class="all-img-list cf"]/li') # /html/body/div[1]/div[5]/div[2]/div[2]/div/ul
+    infos = selector.xpath('//ul[@class="all-img-list cf"]/li') 
     for info in infos:
-        title = info.xpath('div[2]/h4/a/text()')[0] # /html/body/div[1]/div[5]/div[2]/div[2]/div/ul/li[1]/div[2]/h4/a
-        author = info.xpath('div[2]/p[1]/a[1]/text()')[0]  # /html/body/div[1]/div[5]/div[2]/div[2]/div/ul/li[1]/div[2]/p[1]/a[1]
-        style_1 = info.xpath('div[2]/p[1]/a[2]/text()')[0] # /html/body/div[1]/div[5]/div[2]/div[2]/div/ul/li[1]/div[2]/p[1]/a[2]
+        title = info.xpath('div[2]/h4/a/text()')[0] 
+        author = info.xpath('div[2]/p[1]/a[1]/text()')[0]  
+        style_1 = info.xpath('div[2]/p[1]/a[2]/text()')[0] 
         style_2 = info.xpath('div[2]/p[1]/a[3]/text()')[0]
         style = style_1+'.'+style_2
         complete = info.xpath('div[2]/p[1]/span/text()')[0].strip()
-        introduce = info.xpath('div[2]/p[2]/text()')[0].strip() # /html/body/div[1]/div[5]/div[2]/div[2]/div/ul/li[1]/div[2]/p[2]/text()
-        word = info.xpath('div[2]/p[3]/span/text()')[0].strip('万字') # /html/body/div[1]/div[5]/div[2]/div[2]/div/ul/li[1]/div[2]/p[3]/span/span
-        print(title,author,style,complete,introduce,word)
-        info_list = [title,author,style,complete,word,introduce]
+        introduce = info.xpath('div[2]/p[2]/text()')[0].strip() 
+        # word = info.xpath('div[2]/p[3]/span/span/text()')[0].strip('万字') 
+        word_count = get_encode(cmap,numberlist[i][:-1])
+        i += 1
+        print(title,author,style,complete,word_count,introduce)
+        info_list = [title,author,style,complete,word_count,introduce]
         all_info_list.append(info_list)
+    time.sleep(1)
 
 if __name__ == '__main__':
-    urls = ['https://www.qidian.com/all/?page={}'.format(str(i)) for i in range(0,3)]
+    urls = ['https://www.qidian.com/all/?page={}'.format(str(i)) for i in range(0,29655)]
     for url in urls:
         get_info(url)
-    header = ['title','author','style','complete','word','introduce'] # 定义表头
+    header = ['title','author','style','complete','word_count','introduce'] # 定义表头
     book = xlwt.Workbook(encoding='utf-8') # 创建工作簿
     sheet = book.add_sheet('Sheet1') # 创建工作表
     for h in range(len(header)):
