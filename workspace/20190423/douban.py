@@ -1,29 +1,40 @@
+#-*- coding:utf-8 -*-
+
 # lxml 解析HTML文档
 # https://book.douban.com/top250
 import requests
 from lxml import etree
+import csv
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.108 Safari/537.36'
 }
-# url = 'https://book.douban.com/top250'
+
+with open('C:/GitHub/python-learning/workspace/20190423/doubanbook.csv','wt',newline='',encoding='utf-8') as fp:
+    writer = csv.writer(fp)
+    writer.writerow(('name','url','author','publisher','date','price','rate','comment')) # 写入header
 
 def get_info(url):
     html = requests.get(url,headers=headers)
     selector = etree.HTML(html.text)
-    infos = selector.xpath('//tr[@class="item"]')
+    # //*[@id="content"]/div/div[1]/div/table[2]/tbody/tr/td[2]/div[1]/a
+    infos = selector.xpath('//tr[@class="item"]')  # 取大标签，以此循环
     for info in infos:
-        name = info.xpath('td]/div/a/@title')[0]
+        name = info.xpath('td/div/a/@title')[0]
         url = info.xpath('td/div/a/@href')[0]
-        book_infos = info.xpath('td/p/@text()')[0]
-        author = book_infos.split('/')[0]
-        publisher = book_infos.split('/')[-3]
-        date = book_infos.split('/')[-2]
-        price = book_infos.split('/')[-1]
-        rate = info.xpath('td/div/span[2]/text()')[0]
+        # //*[@id="content"]/div/div[1]/div/table[1]/tbody/tr/td[2]/p[1]
+        book_infos = info.xpath('td/p/text()')[0]
+        author = book_infos.split('/')[0].strip(' ')
+        publisher = book_infos.split('/')[-3].strip(' ')
+        date = book_infos.split('/')[-2].strip(' ')
+        price = book_infos.split('/')[-1].strip(' ')
+        rate = info.xpath('td/div/span[2]/text()')[0].strip(' ')
         comments = info.xpath('td/p/span/text()')
-        comment = comments[0] if len(comments) != 0 else '空'
+        comment = comments[0].strip(' ') if len(comments) != 0 else '空'
         print(name,url,author,publisher,date,price,rate,comment)
+        with open('C:/GitHub/python-learning/workspace/20190423/doubanbook.csv','a+',newline='',encoding='utf-8') as fp:            
+            writer = csv.writer(fp)
+            writer.writerow((name,url,author,publisher,date,price,rate,comment)) # 写入数据
 
 # print(infos)
 # print(html) # <Element html at 0x27fdf70c908>
