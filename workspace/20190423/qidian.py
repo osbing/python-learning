@@ -46,35 +46,38 @@ def get_encode(cmap,values):
 
 def get_info(url):
     """ 爬虫 """
-    #  """ 获取字体文件链接 """
-    response = requests.get(url).text   #获取当前页面的html
-    doc = pq(response)
-    classattr = doc('p.update > span > span').attr('class') #获取当前字体文件名称
-    pattern = '</style><span.*?%s.*?>(.*?)</span>'%classattr
-    numberlist = re.findall(pattern,response) #获取当前页面所有被字数字符
-    fonturl = doc('p.update > span > style').text() #获取当前包含字体文件链接的文本
-    url_font = re.search('woff.*?url.*?\'(.+?)\'.*?truetype',fonturl).group(1) #通过正则获取当前页面字体文件链接
-    cmap = get_font(url_font) #字数反爬 解析字体
-    i = 0
+    try:
+        #  """ 获取字体文件链接 """
+        response = requests.get(url).text   #获取当前页面的html
+        doc = pq(response)
+        classattr = doc('p.update > span > span').attr('class') #获取当前字体文件名称
+        pattern = '</style><span.*?%s.*?>(.*?)</span>'%classattr
+        numberlist = re.findall(pattern,response) #获取当前页面所有被字数字符
+        fonturl = doc('p.update > span > style').text() #获取当前包含字体文件链接的文本
+        url_font = re.search('woff.*?url.*?\'(.+?)\'.*?truetype',fonturl).group(1) #通过正则获取当前页面字体文件链接
+        cmap = get_font(url_font) #字数反爬 解析字体
+        i = 0
 
-    # 开始爬虫
-    html = requests.get(url,headers=headers)
-    selector = etree.HTML(html.text)
-    infos = selector.xpath('//ul[@class="all-img-list cf"]/li') 
-    for info in infos:
-        title = info.xpath('div[2]/h4/a/text()')[0] 
-        author = info.xpath('div[2]/p[1]/a[1]/text()')[0]  
-        style_1 = info.xpath('div[2]/p[1]/a[2]/text()')[0] 
-        style_2 = info.xpath('div[2]/p[1]/a[3]/text()')[0]
-        style = style_1+'.'+style_2
-        complete = info.xpath('div[2]/p[1]/span/text()')[0].strip()
-        introduce = info.xpath('div[2]/p[2]/text()')[0].strip() 
-        # word = info.xpath('div[2]/p[3]/span/span/text()')[0].strip('万字') 
-        word_count = get_encode(cmap,numberlist[i][:-1])
-        i += 1
-        print(title,author,style,complete,word_count,introduce)
-        info_list = [title,author,style,complete,word_count,introduce]
-        all_info_list.append(info_list)
+        # 开始爬虫
+        html = requests.get(url,headers=headers)
+        selector = etree.HTML(html.text)
+        infos = selector.xpath('//ul[@class="all-img-list cf"]/li') 
+        for info in infos:
+            title = info.xpath('div[2]/h4/a/text()')[0] 
+            author = info.xpath('div[2]/p[1]/a[1]/text()')[0]  
+            style_1 = info.xpath('div[2]/p[1]/a[2]/text()')[0] 
+            style_2 = info.xpath('div[2]/p[1]/a[3]/text()')[0]
+            style = style_1+'.'+style_2
+            complete = info.xpath('div[2]/p[1]/span/text()')[0].strip()
+            introduce = info.xpath('div[2]/p[2]/text()')[0].strip() 
+            # word = info.xpath('div[2]/p[3]/span/span/text()')[0].strip('万字') 
+            word_count = get_encode(cmap,numberlist[i][:-1])
+            i += 1
+            print(title,author,style,complete,word_count,introduce)
+            info_list = [title,author,style,complete,word_count,introduce]
+            all_info_list.append(info_list)
+    except:
+        pass
     time.sleep(1)
 
 if __name__ == '__main__':
