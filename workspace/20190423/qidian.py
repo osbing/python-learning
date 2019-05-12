@@ -81,7 +81,7 @@ def get_info(url):
     time.sleep(1)
 
 if __name__ == '__main__':
-    urls = ['https://www.qidian.com/all/?page={}'.format(str(i)) for i in range(0,1000)]
+    urls = ['https://www.qidian.com/all/?page={}'.format(str(i)) for i in range(0,10)]
     for url in urls:
         get_info(url)
     header = ['title','author','style','complete','word_count','introduce'] # 定义表头
