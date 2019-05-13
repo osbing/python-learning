@@ -58,7 +58,7 @@ def lxml_scraper(url):
 
 if __name__ == '__main__':
     urls = ['https://www.qiushibaike.com/text/page/{}/'.format(str(i)) for i in range(1,36)]
-    for name,scraper in [('Regularexpressions',re_scraper),('BeautifulSoup',bs_scraper),('Lxml',lxml_scraper)]:
+    for name,scraper in [('Regu',re_scraper),('BeaS',bs_scraper),('Lxml',lxml_scraper)]:
         # 循环三种方法
         start_1 = time.time()
         for url in urls:
