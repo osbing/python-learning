@@ -1,3 +1,4 @@
+# 异步加载 AJAX
 from bs4 import BeautifulSoup
 import requests
 from multiprocessing import Pool
