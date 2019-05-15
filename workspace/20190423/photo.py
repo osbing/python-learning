@@ -1,4 +1,5 @@
 # 异步加载 AJAX
+# DATE 2019/5/13
 from bs4 import BeautifulSoup
 import requests
 from multiprocessing import Pool
